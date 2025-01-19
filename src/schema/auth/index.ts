@@ -42,3 +42,5 @@ export type RegisterUserPayloadType = Omit<
   z.infer<typeof signupUserSchema>,
   "confirmPassword"
 >;
+
+export type LoginUserPayloadType = z.infer<typeof loginUserSchema>;

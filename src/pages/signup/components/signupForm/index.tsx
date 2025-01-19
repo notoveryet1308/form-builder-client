@@ -1,10 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import { Ban, Eye, EyeClosed } from "lucide-react";
 
-import { registerUser } from "@/api/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,36 +11,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signupUserSchema } from "@/schema/auth";
-import { useState } from "react";
+import useSignupData from "../../hooks/useSignupData";
 
 const SignupForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [confirmPasswordMatch, setConfirmPasswordMatch] = useState(true);
-
-  const form = useForm<z.infer<typeof signupUserSchema>>({
-    resolver: zodResolver(signupUserSchema),
-    defaultValues: {
-      email: "",
-      firstName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const toggleShowPassword = () => setShowPassword(!showPassword);
-
-  const onSubmit = (values: z.infer<typeof signupUserSchema>) => {
-    setConfirmPasswordMatch(values.confirmPassword === values.password);
-    if (values.confirmPassword === values.password) {
-      // navigate({ to: "/workspace" });
-      registerUser(values);
-    }
-  };
+  const {
+    error,
+    form,
+    onSubmit,
+    isLoading,
+    showPassword,
+    toggleShowPassword,
+    confirmPasswordMatch,
+  } = useSignupData();
 
   return (
     <>
+      {!isLoading && error && (
+        <Alert variant="error">
+          <AlertDescription>
+            {error.error.message || "Something went wrong"}
+          </AlertDescription>
+        </Alert>
+      )}
       {!confirmPasswordMatch && (
         <Alert variant="warning">
           <Ban />
@@ -73,6 +60,7 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
+
           <div className="grid grid-cols-2 gap-8">
             <FormField
               control={form.control}
@@ -144,8 +132,8 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
-          <Button className="w-full" type="submit">
-            Submit
+          <Button className="w-full" type="submit" disabled={isLoading}>
+            {isLoading ? "Signing up..." : "Sign up"}
           </Button>
         </form>
       </Form>

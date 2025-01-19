@@ -1,8 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,22 +9,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { loginUserSchema } from "@/schema/auth";
+import useLoginData from "../../hooks/useLoginData";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
-  const form = useForm<z.infer<typeof loginUserSchema>>({
-    resolver: zodResolver(loginUserSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const { form, onSubmit, isLoading } = useLoginData();
 
-  const onSubmit = (values: z.infer<typeof loginUserSchema>) => {
-    console.log(values);
-    navigate({ to: "/workspace" });
-  };
   return (
     <Form {...form}>
       <form
@@ -64,8 +48,8 @@ const LoginForm = () => {
           )}
         />
 
-        <Button className="w-full" type="submit">
-          Login
+        <Button className="w-full" type="submit" disabled={isLoading}>
+          {isLoading ? "Login you in..." : "Login"}
         </Button>
       </form>
     </Form>

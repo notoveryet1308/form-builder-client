@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { BASE_URL } from "../constants";
+import { log } from "console";
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 interface ApiRequest<T> {
   method: HttpMethod;
@@ -25,8 +26,8 @@ export const instance: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 1000,
   headers: {
-    'Content-Type': 'application/json',
-  }
+    "Content-Type": "application/json",
+  },
 });
 
 export const requestServer = async <TRequest, TResponse>({
@@ -39,21 +40,16 @@ export const requestServer = async <TRequest, TResponse>({
     instance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   }
 
-  const onSuccess = (response: AxiosResponse<ApiResponse<TResponse>>) => {
+  try {
+    const response: AxiosResponse<ApiResponse<TResponse>> = await instance({
+      method,
+      url,
+      data,
+    });
+    console.log({ response }, "requestServer");
     return response.data.data;
-  };
-
-  const onError = (error: AxiosError<ApiError>) => {
-    const errorResponse = error.response?.data || {
-      message: 'An unexpected error occurred',
-      status: 500,
-    };
-    return Promise.reject(new Error(errorResponse.message));
-  };
-
-  return instance<ApiResponse<TResponse>>({
-    method,
-    url,
-    data,
-  }).then(onSuccess).catch(onError);
+  } catch (error) {
+    const axiosError = error as AxiosError<ApiError>;
+    throw axiosError.response?.data;
+  }
 };
