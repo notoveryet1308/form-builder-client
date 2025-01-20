@@ -22,7 +22,7 @@ const useLoginQuery = () => {
   });
 
   const mutate = ({ variables, onError, onSuccess }: LoginMutationOptions) => {
-    mutation.mutateAsync(variables, { onError, onSuccess });
+    mutation.mutate(variables, { onError, onSuccess });
   };
 
   return {

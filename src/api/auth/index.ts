@@ -19,7 +19,6 @@ export const registerUser = async (payload: RegisterUserPayloadType) => {
     url: AUTH_ENDPOINT.REGISTER,
     data: payload,
   });
-  console.log({ response });
   return response;
 };
 
@@ -32,7 +31,6 @@ export const loginUser = async (payload: LoginUserPayloadType) => {
     url: AUTH_ENDPOINT.LOGIN,
     data: payload,
   });
-  console.log({ response });
 
   return response;
 };

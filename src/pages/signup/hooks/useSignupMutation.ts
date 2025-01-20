@@ -23,7 +23,7 @@ const useSignupMutation = () => {
   });
 
   const mutate = ({ variables, onSuccess, onError }: SignupMutationOptions) => {
-    mutation.mutateAsync(variables, {
+    mutation.mutate(variables, {
       onSuccess,
       onError: (error: ServerErrorResponseType) => {
         onError?.(error);

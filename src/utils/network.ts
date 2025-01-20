@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { BASE_URL } from "../constants";
-import { log } from "console";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
@@ -24,7 +23,6 @@ interface ApiError {
 
 export const instance: AxiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 1000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -46,7 +44,6 @@ export const requestServer = async <TRequest, TResponse>({
       url,
       data,
     });
-    console.log({ response }, "requestServer");
     return response.data.data;
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>;
